@@ -31,9 +31,9 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private SensorManager sensorManager;
-    private Sensor gravitySensor;
+//    private Sensor gravitySensor;
     private TextView textView;
-    private Sensor linearAcclerationSensor;
+//    private Sensor linearAcclerationSensor;
     private LineChart lineChart;
     private int grantResults[];
     List<Entry> lineDataX;
@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     int counter=0;
     int lim=500;
     Activity av;
+
+    private Sensor magnetSensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,21 +66,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // defining sensors
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        linearAcclerationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        sensorManager.registerListener(this, gravitySensor, SensorManager.SENSOR_DELAY_FASTEST);
-        sensorManager.registerListener(this, linearAcclerationSensor, SensorManager.SENSOR_DELAY_FASTEST);
+//        gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+//        linearAcclerationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+//        sensorManager.registerListener(this, gravitySensor, SensorManager.SENSOR_DELAY_FASTEST);
+//        sensorManager.registerListener(this, linearAcclerationSensor, SensorManager.SENSOR_DELAY_FASTEST);
+        magnetSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        sensorManager.registerListener(this, magnetSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
         // on click listeners
         Constants.startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Constants.accx=new ArrayList<>();
-                Constants.accy=new ArrayList<>();
-                Constants.accz=new ArrayList<>();
-                Constants.gravx=new ArrayList<>();
-                Constants.gravy=new ArrayList<>();
-                Constants.gravz=new ArrayList<>();
+//                Constants.accx=new ArrayList<>();
+//                Constants.accy=new ArrayList<>();
+//                Constants.accz=new ArrayList<>();
+//                Constants.gravx=new ArrayList<>();
+//                Constants.gravy=new ArrayList<>();
+//                Constants.gravz=new ArrayList<>();
+                Constants.magx=new ArrayList<>();
+                Constants.magy=new ArrayList<>();
+                Constants.magz=new ArrayList<>();
                 Constants.startButton.setEnabled(false);
                 Constants.stopButton.setEnabled(true);
 
@@ -110,19 +117,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (Constants.start) {
-            if (sensorEvent.sensor.equals(linearAcclerationSensor)) {
-                Constants.accx.add(sensorEvent.values[0]);
-                Constants.accy.add(sensorEvent.values[1]);
-                Constants.accz.add(sensorEvent.values[2]);
-
-                //graphing logic
-                graphData(sensorEvent.values);
-            }
-            else {
-                Constants.gravx.add(sensorEvent.values[0]);
-                Constants.gravy.add(sensorEvent.values[1]);
-                Constants.gravz.add(sensorEvent.values[2]);
-            }
+//            if (sensorEvent.sensor.equals(linearAcclerationSensor)) {
+//                Constants.accx.add(sensorEvent.values[0]);
+//                Constants.accy.add(sensorEvent.values[1]);
+//                Constants.accz.add(sensorEvent.values[2]);
+//
+//                //graphing logic
+//                graphData(sensorEvent.values);
+//            }
+//            else {
+//                Constants.gravx.add(sensorEvent.values[0]);
+//                Constants.gravy.add(sensorEvent.values[1]);
+//                Constants.gravz.add(sensorEvent.values[2]);
+//            }
+            Constants.magx.add(sensorEvent.values[0]);
+            Constants.magy.add(sensorEvent.values[1]);
+            Constants.magz.add(sensorEvent.values[2]);
+            graphData(sensorEvent.values);
             Log.e("log",String.format("%s %.2f %.2f %.2f",sensorEvent.sensor.getName(),sensorEvent.values[0],sensorEvent.values[1],sensorEvent.values[2]));
         }
     }
@@ -160,8 +171,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(this, gravitySensor, SensorManager.SENSOR_DELAY_FASTEST);
-        sensorManager.registerListener(this, linearAcclerationSensor, SensorManager.SENSOR_DELAY_FASTEST);
+//        sensorManager.registerListener(this, gravitySensor, SensorManager.SENSOR_DELAY_FASTEST);
+//        sensorManager.registerListener(this, linearAcclerationSensor, SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this, magnetSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     protected void onPause() {
